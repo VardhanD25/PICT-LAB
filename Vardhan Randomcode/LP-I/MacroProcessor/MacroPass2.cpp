@@ -102,9 +102,10 @@ public:
         }
     }
 
-    vector<string> findMNT(string name){
+    vector<string> findMNT(string name,int pp){
         for(int i=0;i<MNT.size();i++){
-            if(MNT[i][0]==name){
+            if(MNT[i][0]==name && stoi(MNT[i][1])==pp){
+                cout<<"Found macro "<<name<<" with "<<pp<<" positional params"<<endl;
                 return MNT[i];
             }
         }
@@ -147,15 +148,25 @@ public:
 
             auto it = find(NAMES.begin(), NAMES.end(), words[0]);
             if (it == NAMES.end()) {  // Not a macro, just copy the line
-                for (const auto& w : words) {
-                    expandedLOC << w << " ";
-                }
-                expandedLOC << endl;
+                // for (const auto& w : words) {
+                //     expandedLOC << w << " ";
+                // }
+                // expandedLOC << endl;
+                cout<<"Invalid macro call "<<words[0]<<endl;
             } else {  // Macro found, expand it
                 string name = words[0];
-                vector<string> mntEntry = findMNT(name);
+                int countPP=0;
+                for(int i=1;i<words.size();i++){
+                    if(words[i].at(0)=='&'){
+                        break;
+                    }
+                    else{
+                        countPP++;
+                    }
+                }
+                vector<string> mntEntry = findMNT(name,countPP);
                 if (mntEntry[0] == "Invalid") {
-                    cout << "Invalid macro call" << endl;
+                    cout << "Invalid macro call 1" << endl;
                     continue;
                 }
 
@@ -166,11 +177,18 @@ public:
                 int numPos = stoi(mntEntry[1]);
                 int numKey = stoi(mntEntry[2]);
                 int actualKey = 0;
+                
+                
 
                 // Fill APTAB with positional parameters
                 for (int i = 1; i <= numPos; i++) {
-                    APTAB.push_back({words[i], ""});
-                    aptab << words[i] << endl;
+                    if(words[i].at(0)!='&'){    
+                        APTAB.push_back({words[i], ""});
+                        aptab << words[i] << endl;
+                }else{
+                    cout<<"Invalid positional parameter "<<words[i]<<endl; 
+                }
+                    
                 }
 
                 // Fill APTAB with keyword parameters from the macro call
@@ -204,9 +222,14 @@ public:
                         }
                     }
                 }
+                if((numPos+numKey)!=APTAB.size()){
+                    cout<< "Invalid / insufficient parameters"<<endl;
+                    break;
+                }
 
                 // Expand the macro definition
                 while (MDT[mdtp][0] != "MEND") {
+                    expandedLOC<<"+ ";
                     for (const auto& token : MDT[mdtp]) {
                         if (token.at(0) == '(' && token.at(1) == 'P') {
                             int ref = token.at(3) - '0'; // Convert char to int
