@@ -83,6 +83,16 @@ public:
         return index;
     }
 
+    int count(string param,int start, int end){
+        int cnt=0;
+        for(int i=start;i<end;i++){
+            if(PNTAB[i]==param){
+                cnt++;
+            }
+        }
+        return cnt;
+    }
+
     void passOne() {
     vector<string> words;
     vector<string> temp;
@@ -145,6 +155,8 @@ public:
                             }
                         }
                     }
+                    
+
 
                     if (kcounter != 0) {
                         m.KPDTP = KPDTAB.size() - kcounter + 1;
@@ -153,6 +165,25 @@ public:
                     m.PP = pcounter - kcounter;
                     m.MDTP = mcounter + 1;
                     firstLine = false;
+
+                    for(int i=0;i<MNT.size();i++){
+                        if(name==MNT[i].first && m.PP==MNT[i].second.PP){
+                            cout<<"Macro with same name and parameters exists ! May lead to ambiguous calls !"<<endl;
+                        }
+                    }
+                    int ref=0;
+                    for(int i=0;i<PNTAB.size();i++){
+                        if(name==PNTAB[i]){
+                            ref=i;
+                            break;
+                        }
+                    }
+                    for(int i=ref+1;i<ref+m.KP+m.PP+1;i++){
+                        if(count(PNTAB[i],ref+1,ref+m.KP+m.PP+1)>1){
+                            cout<<"Error: Parameters cannot be duplicate"<<endl;
+                            break;
+                        }
+                    }
 
                     MNT.push_back({name, m});
                 }
