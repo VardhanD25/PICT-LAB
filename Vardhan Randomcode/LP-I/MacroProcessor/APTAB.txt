@@ -1,0 +1,8 @@
+10
+20
+&B=CREG
+&A=AREG
+100
+200
+&V=AREG
+&U=BREG
