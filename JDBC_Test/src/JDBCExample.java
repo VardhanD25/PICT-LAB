@@ -3,7 +3,7 @@ import java.sql.*;
 public class JDBCExample {
     private static final String URL = "jdbc:mysql://localhost:3306/test_db?useSSL=false";
     private static final String USER = "root";
-    private static final String PASSWORD = "Phuskya3333!";
+    private static final String PASSWORD = "your_password";
 
     public static void main(String[] args) {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
